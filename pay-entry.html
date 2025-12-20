@@ -30,11 +30,14 @@
       font-weight: bold;
       font-size: 16px;
       transition: background 0.3s;
+      cursor: pointer;
     }
     .button:hover {
       background: #005bb5;
     }
   </style>
+  <!-- Stripe.js library -->
+  <script src="https://js.stripe.com/v3/"></script>
 </head>
 <body>
 
@@ -42,13 +45,30 @@
   <h1>Paid Entry – Prize Draw</h1>
   <p>Paid entry is optional. Free postal entry has exactly the same chance of winning.</p>
 
-  <div id="payment-button-container">
-    <a href="#" class="button">Pay Now (Stripe / PayPal)</a>
-  </div>
+  <button id="checkout-button" class="button">Pay Now</button>
 
   <p>For full details, please refer to our <a href="terms.html">Terms & Conditions</a>.</p>
   <p>© 2025 The promoter of this prize draw operates this website.</p>
 </div>
+
+<script>
+  // Initialize Stripe with your publishable key
+  const stripe = Stripe('YOUR_PUBLISHABLE_KEY');
+
+  const checkoutButton = document.getElementById('checkout-button');
+  checkoutButton.addEventListener('click', () => {
+    stripe.redirectToCheckout({
+      lineItems: [{price: 'YOUR_PRICE_ID', quantity: 1}],
+      mode: 'payment',
+      successUrl: window.location.origin + '/success.html',
+      cancelUrl: window.location.origin + '/pay-entry.html',
+    }).then((result) => {
+      if (result.error) {
+        alert(result.error.message);
+      }
+    });
+  });
+</script>
 
 </body>
 </html>
