@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Paid Entry – Prize Draw</title>
-
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,46 +17,37 @@
       padding: 30px;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1, h2 {
-      color: #222;
-    }
-    p, li {
-      color: #444;
-      line-height: 1.6;
+      text-align: center;
     }
     .button {
       display: inline-block;
       padding: 12px 25px;
-      margin: 20px 0;
+      margin: 10px;
       background: #0070f3;
       color: #fff;
       border-radius: 5px;
       text-decoration: none;
       font-weight: bold;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+    .button:hover {
+      background: #005bb5;
     }
   </style>
 </head>
-
 <body>
 
 <div class="container">
+  <h1>Paid Entry – Prize Draw</h1>
+  <p>Paid entry is optional. Free postal entry has exactly the same chance of winning.</p>
 
-<h1>Paid Entry – Prize Draw</h1>
+  <div id="payment-button-container">
+    <a href="#" class="button">Pay Now (Stripe / PayPal)</a>
+  </div>
 
-<p>Paid entry is <strong>optional</strong>. You may participate for free via postal entry, which has exactly the same chance of winning as paid entries.</p>
-
-<h2>How to Enter</h2>
-<p>Click the button below to pay for your entry. Paid entry is optional and only one ticket per entry will be issued.</p>
-
-<a href="#" class="button">Coming Soon – Pay Entry</a>
-
-<hr>
-
-<p>For full details, please refer to our <a href="terms.html">Terms & Conditions</a>.</p>
-
-<p>© 2025 The promoter of this prize draw operates this website.</p>
-
+  <p>For full details, please refer to our <a href="terms.html">Terms & Conditions</a>.</p>
+  <p>© 2025 The promoter of this prize draw operates this website.</p>
 </div>
 
 </body>
