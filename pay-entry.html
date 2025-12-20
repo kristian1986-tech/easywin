@@ -35,6 +35,17 @@
     .button:hover {
       background: #005bb5;
     }
+    input {
+      padding: 8px;
+      width: 80%;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    label {
+      font-weight: bold;
+    }
   </style>
   <!-- Stripe.js library -->
   <script src="https://js.stripe.com/v3/"></script>
@@ -45,29 +56,63 @@
   <h1>Paid Entry – Prize Draw</h1>
   <p>Paid entry is optional. Free postal entry has exactly the same chance of winning.</p>
 
-  <button id="checkout-button" class="button">Pay Now</button>
+  <!-- Formular participanti -->
+  <form id="entry-form">
+    <label for="name">Nume:</label><br>
+    <input type="text" id="name" name="name" required><br>
+
+    <label for="phone">Număr de telefon:</label><br>
+    <input type="tel" id="phone" name="phone" required><br>
+
+    <button type="submit" class="button">Trimite și Continuă la Plată</button>
+  </form>
+
+  <!-- Buton Stripe / Google Pay -->
+  <div style="margin-top: 20px;">
+    <button id="checkout-button" class="button">Pay Now</button>
+  </div>
 
   <p>For full details, please refer to our <a href="terms.html">Terms & Conditions</a>.</p>
   <p>© 2025 The promoter of this prize draw operates this website.</p>
 </div>
 
 <script>
-  // Initialize Stripe with your publishable key
-  const stripe = Stripe('YOUR_PUBLISHABLE_KEY');
+const form = document.getElementById('entry-form');
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
 
-  const checkoutButton = document.getElementById('checkout-button');
-  checkoutButton.addEventListener('click', () => {
-    stripe.redirectToCheckout({
-      lineItems: [{price: 'YOUR_PRICE_ID', quantity: 1}],
-      mode: 'payment',
-      successUrl: window.location.origin + '/success.html',
-      cancelUrl: window.location.origin + '/pay-entry.html',
-    }).then((result) => {
-      if (result.error) {
-        alert(result.error.message);
-      }
-    });
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+
+  // Trimite datele către Google Sheet (Apps Script)
+  fetch('YOUR_GOOGLE_APPS_SCRIPT_URL', {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({name, phone})
   });
+
+  alert('Datele tale au fost trimise!');
+
+  // Redirect către plata cu Stripe
+  window.location.href = '#checkout-button';
+});
+
+// Stripe Checkout (doar placeholder)
+const stripe = Stripe('YOUR_PUBLISHABLE_KEY');
+const checkoutButton = document.getElementById('checkout-button');
+checkoutButton.addEventListener('click', () => {
+  stripe.redirectToCheckout({
+    lineItems: [{price: 'YOUR_PRICE_ID', quantity: 1}],
+    mode: 'payment',
+    successUrl: window.location.origin + '/success.html',
+    cancelUrl: window.location.origin + '/pay-entry.html',
+  }).then((result) => {
+    if (result.error) {
+      alert(result.error.message);
+    }
+  });
+});
 </script>
 
 </body>
