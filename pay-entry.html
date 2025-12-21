@@ -85,7 +85,7 @@ form.addEventListener('submit', (e) => {
   const phone = document.getElementById('phone').value;
 
   // Trimite datele către Google Sheet (Apps Script)
-  fetch('YOUR_GOOGLE_APPS_SCRIPT_URL', {
+  fetch("https://script.google.com/macros/s/AKfycbzrSEej5Su2a5wXiYzkuL3Xn8fDXrGt7T4aZbqsc0lNkxyagXjBoixaKEwaVUsq8nPrBg/exec", {
     method: 'POST',
     mode: 'no-cors',
     headers: {'Content-Type': 'application/json'},
