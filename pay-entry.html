@@ -1,91 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Paid Entry – Prize Draw</title>
-  <style>
-    body { font-family: Arial; background:#f7f7f7; margin:0; padding:0; }
-    .container { max-width:800px; margin:40px auto; background:#fff; padding:30px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1); text-align:center; }
-    h1 { color:#222; }
-    form { display:flex; flex-direction:column; align-items:center; margin-top:20px; }
-    input, select { padding:10px; margin:10px; width:300px; font-size:16px; border-radius:5px; border:1px solid #ccc; }
-    .button { display:inline-block; padding:12px 25px; margin:20px; background:#0070f3; color:#fff; border-radius:5px; text-decoration:none; font-weight:bold; font-size:16px; cursor:pointer; transition:background 0.3s; }
-    .button:hover { background:#005bb5; }
-    #message { color:green; margin-top:10px; }
-  </style>
+<meta charset="UTF-8">
+<title>Paid Entry</title>
 </head>
+
 <body>
+<h1>Paid Entry</h1>
 
-<div class="container">
-  <h1>Paid Entry</h1>
-  <p>Fill in your details and pay for your ticket(s). Each ticket has equal chance of winning!</p>
+<form id="entryForm">
+  <input type="text" id="name" placeholder="Full Name" required><br><br>
+  <input type="tel" id="phone" placeholder="Phone Number" required><br><br>
+  <button type="submit">Pay Now</button>
+</form>
 
-  <form id="paidEntryForm">
-    <input type="text" name="name" placeholder="Your Name" required>
-    <input type="tel" name="phone" placeholder="Phone Number" required>
-    <select name="tickets" required>
-      <option value="">Number of Tickets</option>
-      <option value="1">1 Ticket</option>
-      <option value="2">2 Tickets</option>
-      <option value="3">3 Tickets</option>
-      <option value="4">4 Tickets</option>
-      <option value="5">5 Tickets</option>
-    </select>
-    <button type="submit" class="button">Pay Now</button>
-  </form>
+<p id="msg"></p>
 
-  <div id="message"></div>
-</div>
-
-<!-- Stripe JS -->
-<script src="https://js.stripe.com/v3/"></script>
 <script>
-const form = document.getElementById("paidEntryForm");
-const message = document.getElementById("message");
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwsZHgujHDeBZFu6ddExWu9bw7ImZiFwho0_6Dx74sM86oBWuTJy-jUrI-D112U4YzNYw/exec";
 
-form.addEventListener("submit", async function(e) {
+document.getElementById("entryForm").addEventListener("submit", function(e) {
   e.preventDefault();
 
-  const formData = new FormData(form);
-  const name = formData.get("name");
-  const phone = formData.get("phone");
-  const tickets = formData.get("tickets");
-
-  message.innerHTML = `Thanks ${name}! Saving your entry...`;
-
-  try {
-    // 1️⃣ Trimite datele către Google Apps Script
-    const response = await fetch("https://script.google.com/macros/s/AKfycbxQZjBejwHiaWIqGTD4W2eZcleYK1WRA9eCnraUwIpzEJF6uFWxrZ8ZTHbmAgGa96yJpg/exec", { 
-      method: "POST",
-      body: JSON.stringify({ name, phone, tickets }),
-      headers: { "Content-Type": "application/json" }
-    });
-
-    const result = await response.json();
-
-    if(result.status === "success") {
-      message.innerHTML = `Entry saved! Redirecting to payment...`;
-
-      // 2️⃣ Inițializează Stripe și redirecționează la Checkout
-      setTimeout(() => { // mic delay pentru a fi sigur că Sheet-ul e actualizat
-        const stripe = Stripe("YOUR_PUBLISHABLE_KEY_HERE");
-        stripe.redirectToCheckout({
-          sessionId: "YOUR_CHECKOUT_SESSION_ID_HERE"
-        }).then(function(result) {
-          if(result.error){
-            message.innerHTML = `Error: ${result.error.message}`;
-          }
-        });
-      }, 500); // 0.5 sec delay
-
-      form.reset();
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      phone: document.getElementById("phone").value
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if(data.status === "success"){
+      document.getElementById("msg").innerText = "Entry received successfully!";
+      document.getElementById("entryForm").reset();
     } else {
-      message.innerHTML = "Error saving entry. Please try again.";
+      document.getElementById("msg").innerText = "Error saving entry.";
     }
-  } catch (error) {
-    console.error(error);
-    message.innerHTML = "Error connecting to server. Please try again.";
-  }
+  })
+  .catch(() => {
+    document.getElementById("msg").innerText = "Server error.";
+  });
 });
 </script>
 
