@@ -46,7 +46,7 @@
 <script>
   // === CONFIG ===
   const PASSWORD = "admin123"; // Schimbă aici parola
-  const SHEET_URL = "https://script.google.com/macros/s/URL_TAU/exec?admin=true"; // URL Apps Script cu parametru admin
+  const SHEET_URL = "https://script.google.com/macros/s/AKfycbxlXGOINEz19BRZQWmnwIlgnMlWGQz_QMz1OTInZ4KUGNCLl3dSXV5l4iWP_MdUYBPh/exec?admin=true"; // URL Apps Script cu parametru admin
 
   const loginDiv = document.getElementById("loginDiv");
   const adminDiv = document.getElementById("adminDiv");
