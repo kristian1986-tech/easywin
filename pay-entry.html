@@ -114,8 +114,7 @@ form.addEventListener("submit", function (e) {
   })
   .then(response => {
     if (response.ok) {
-      form.reset();                 // ✅ reset formular
-      form.style.display = "none";  // ascunde formularul
+      form.reset();                 // ✅ reset formular;
       message.style.display = "block"; // afișează mesajul centrat
     } else {
       alert("Error submitting entry. Please try again.");
