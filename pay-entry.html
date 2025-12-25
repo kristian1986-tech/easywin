@@ -6,63 +6,74 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f7f7f7;
+      background: #f2f2f2;
       margin: 0;
       padding: 0;
       text-align: center;
     }
 
     .container {
-      max-width: 800px;
-      margin: 40px auto;
+      max-width: 600px;
+      margin: 50px auto;
       background: #ffffff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
-    h1, h2 {
+    h1 {
       color: #222;
+      font-size: 32px;
+      margin-bottom: 20px;
     }
 
     p {
       color: #444;
+      font-size: 16px;
       line-height: 1.6;
+      margin-bottom: 30px;
     }
 
-    /* FORM STYLING */
+    /* FORMULAR STYLING */
     #payForm {
       display: flex;
       flex-direction: column;
       align-items: center;
       max-width: 400px;
-      margin: 20px auto;
+      margin: 0 auto;
     }
 
     #payForm input {
       width: 100%;
-      padding: 12px;
-      margin: 8px 0;
+      padding: 14px;
+      margin: 10px 0;
       font-size: 16px;
-      border-radius: 5px;
+      border-radius: 6px;
       border: 1px solid #ccc;
       box-sizing: border-box;
+      transition: border 0.3s;
+    }
+
+    #payForm input:focus {
+      border-color: #0070f3;
+      outline: none;
     }
 
     #payForm button {
-      padding: 12px 25px;
+      padding: 14px 30px;
       font-size: 18px;
       background-color: #0070f3;
       color: #fff;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: background 0.3s, transform 0.2s;
       margin-top: 10px;
     }
 
     #payForm button:hover {
       background-color: #005bb5;
+      transform: translateY(-2px);
     }
 
     #msg {
@@ -71,12 +82,16 @@
       font-weight: 600;
       color: green;
       display: none;
+      text-align: center;
     }
 
-    /* LANGUAGE SELECTOR STYLING (optional) */
+    /* LANGUAGE SELECTOR STYLING */
     #langSelector {
-      margin-top: 20px;
+      margin-top: 25px;
       font-size: 16px;
+      padding: 6px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
 
   </style>
@@ -106,7 +121,7 @@
 
   <!-- JS: submit + reset + Google Sheet connection -->
   <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbw-UM8_ad79f2OegSGBQoSenWCbyfiPRrWzJ9rciNpN9DlVHnGel2l6MGo4gH5NZ4JNpg/exec"; // pune aici URL-ul tău
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzJQzG46hLpPjzmr0qIL1OyW-ZbnZ1lFYTM2wMnO4ZfHnOz_6_5AwZf004bCA6sv2HRBA/exec"; // pune aici URL-ul tău
     const form = document.getElementById("payForm");
     const msg = document.getElementById("msg");
 
@@ -126,12 +141,11 @@
         });
     });
 
-    // optional: Language selector logic (dacă vrei să faci schimbarea limbii)
+    // optional: Language selector logic (doar vizual)
     const selector = document.getElementById("langSelector");
     selector.addEventListener("change", (e) => {
       const lang = e.target.value;
-      // logica pentru schimbarea limbii se poate adăuga aici
-      alert("Language switched to: " + lang); 
+      alert("Language selected: " + lang); // placeholder
     });
   </script>
 </body>
