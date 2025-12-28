@@ -4,6 +4,25 @@
   <meta charset="UTF-8">
   <title>Pay Entry - Prize Draw</title>
   <style>
+.closed-box {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  margin-top: 40px;
+  background: #f7f7f7;
+  border-radius: 10px;
+}
+
+.closed-box h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.closed-box p {
+  font-size: 18px;
+  color: #444;
+}
+  </style>
     body {
       font-family: Arial, sans-serif;
       background: #f7f7f7;
@@ -63,6 +82,11 @@
 <body>
 <div class="container">
   <h1>Paid Entry</h1>
+  <div id="closedBox" class="closed-box">
+  <h2>Entries are closed</h2>
+  <p>This competition is sold out.</p>
+  <p>A new competition is coming soon</p>
+  </div>
   <p>Complete the form to enter the competition.</p>
 
   <form id="entry-form">
@@ -124,6 +148,18 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 });
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbyy0m9TiuMThltJuFcSS1v5n7bgFFEhDb-Qg4JrH0fz/dev";
+
+fetch(scriptURL)
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === "closed") {
+      document.getElementById("entryForm").style.display = "none";
+      document.getElementById("payNowButton").style.display = "none";
+      document.getElementById("closedBox").style.display = "block";
+    }
+  });
 </script>
 </body>
 </html>
