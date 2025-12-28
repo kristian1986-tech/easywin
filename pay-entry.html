@@ -2,164 +2,121 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Pay Entry - Prize Draw</title>
+  <title>Paid Entry</title>
+
   <style>
-.closed-box {
-  display: none;
-  text-align: center;
-  padding: 40px;
-  margin-top: 40px;
-  background: #f7f7f7;
-  border-radius: 10px;
-}
-
-.closed-box h2 {
-  font-size: 28px;
-  margin-bottom: 10px;
-}
-
-.closed-box p {
-  font-size: 18px;
-  color: #444;
-}
-  </style>
     body {
       font-family: Arial, sans-serif;
       background: #f7f7f7;
       margin: 0;
       padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
     }
+
     .container {
+      max-width: 500px;
+      margin: 50px auto;
       background: #fff;
       padding: 30px;
-      border-radius: 8px;
+      border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       text-align: center;
-      width: 90%;
-      max-width: 500px;
     }
-    h1 {
-      color: #222;
-    }
+
     input {
-      width: 80%;
-      padding: 10px;
+      width: 100%;
+      padding: 12px;
       margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
+      font-size: 16px;
     }
+
     button {
-      padding: 12px 25px;
-      margin-top: 15px;
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
       background: #0070f3;
-      color: #fff;
+      color: white;
       border: none;
       border-radius: 5px;
-      font-size: 16px;
-      font-weight: bold;
       cursor: pointer;
-      transition: background 0.3s;
     }
+
     button:hover {
       background: #005bb5;
     }
-    #message {
-      margin-top: 20px;
-      font-weight: bold;
-      color: green;
+
+    .closed-box {
+      display: none;
+      text-align: center;
+      padding: 30px;
+      background: #f7f7f7;
+      border-radius: 10px;
     }
-    #sold-out {
-      color: red;
-      font-weight: bold;
+
+    #successMessage {
+      display: none;
+      color: green;
       margin-top: 20px;
+      font-weight: bold;
     }
   </style>
 </head>
-<body>
-<div class="container">
-  <h1>Paid Entry</h1>
-  <div id="closedBox" class="closed-box">
-  <h2>Entries are closed</h2>
-  <p>This competition is sold out.</p>
-  <p>A new competition is coming soon</p>
-  </div>
-  <p>Complete the form to enter the competition.</p>
 
-  <form id="entry-form">
-    <input type="text" name="name" placeholder="Your Name" required><br>
-    <input type="text" name="phone" placeholder="Phone Number" required><br>
+<body>
+
+<div class="container">
+
+  <h1>Paid Entry</h1>
+
+  <div id="closedBox" class="closed-box">
+    <h2>Entries are closed</h2>
+    <p>This competition is sold out.</p>
+    <p>A new competition is coming soon.</p>
+  </div>
+
+  <form id="entryForm">
+    <input type="text" name="name" placeholder="Your name" required>
+    <input type="tel" name="phone" placeholder="Phone number" required>
     <button type="submit">Pay Now</button>
   </form>
 
-  <div id="message"></div>
-  <div id="sold-out" style="display:none;">Entries are closed!</div>
+  <div id="successMessage">
+    Entry received successfully!  
+    We will contact you if you win.
+  </div>
 
-  <!-- numar curent participanti -->
-  <span id="current-count" style="display:none;">0</span>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const form = document.getElementById("entry-form");
-  const message = document.getElementById("message");
-  const soldOut = document.getElementById("sold-out");
-  const maxParticipants = 2; // schimbi limita aici
-  const countEl = document.getElementById("current-count");
+const SCRIPT_URL = "PASTEAZA_AICI_URL_UL_SCRIPTULUI_TAU";
 
-  let currentParticipants = parseInt(countEl.textContent) || 0;
-
-  function updateFormState() {
-    if(currentParticipants >= maxParticipants){
-      form.style.display = "none";
-      soldOut.style.display = "block";
-    }
-  }
-
-  updateFormState();
-
-  form.addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    if(currentParticipants >= maxParticipants){
-      alert("Entries are closed!");
-      return;
-    }
-
-    // trimite datele catre Google Script (pastrezi fetch-ul tau original)
-    fetch("https://script.google.com/macros/s/AKfycbyy0m9TiuMThltJuFcSS1v5n7bgFFEhDb-Qg4JrH0fz/dev", { 
-      method: "POST", 
-      body: new FormData(form) 
-    })
-    .then(response => response.text())
-    .then(data => {
-      message.textContent = "Entry received successfully! We will contact you if you win.";
-      form.reset();
-      currentParticipants++;
-      countEl.textContent = currentParticipants;
-      updateFormState();
-    })
-    .catch(error => {
-      alert("Error connecting to server. Please try again.");
-      console.error(error);
-    });
-  });
-});
-<script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbyy0m9TiuMThltJuFcSS1v5n7bgFFEhDb-Qg4JrH0fz/dev";
-
-fetch(scriptURL)
-  .then(res => res.json())
+/* 1️⃣ Verifică dacă e OPEN sau CLOSED */
+fetch(SCRIPT_URL)
+  .then(r => r.json())
   .then(data => {
     if (data.status === "closed") {
       document.getElementById("entryForm").style.display = "none";
-      document.getElementById("payNowButton").style.display = "none";
       document.getElementById("closedBox").style.display = "block";
     }
   });
+
+/* 2️⃣ Trimitere formular */
+document.getElementById("entryForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: new FormData(this)
+  })
+  .then(() => {
+    document.getElementById("successMessage").style.display = "block";
+    this.reset();
+  })
+  .catch(err => {
+    alert("Error submitting entry");
+    console.error(err);
+  });
+});
 </script>
+
 </body>
 </html>
