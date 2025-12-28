@@ -1,95 +1,110 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Pay Entry</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #f7f7f7;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-  }
-  .container {
-    max-width: 600px;
-    margin: 50px auto;
-    background: #fff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-  input, button {
-    padding: 12px;
-    margin: 10px 0;
-    font-size: 16px;
-    width: 80%;
-  }
-  button {
-    background: #0070f3;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  button:hover {
-    background: #005bb5;
-  }
-  .closed-box {
-    display: none;
-    text-align: center;
-    padding: 40px;
-    margin-top: 40px;
-    background: #f7f7f7;
-    border-radius: 10px;
-  }
-  .closed-box h2 {
-    font-size: 28px;
-    margin-bottom: 10px;
-  }
-  .closed-box p {
-    font-size: 18px;
-    color: #444;
-  }
-</style>
-</head>
-<body>
-
 <div class="container">
-  <h1>Pay Entry</h1>
-  <form id="payForm">
-    <input type="text" name="name" placeholder="Full Name" required><br>
-    <input type="tel" name="phone" placeholder="Phone Number" required><br>
-    <button type="submit">Pay Now</button>
-  </form>
+  <h1>Paid Entry</h1>
 
+  <!-- Box care apare când competiția e închisă -->
   <div id="closedBox" class="closed-box">
     <h2>Entries are closed</h2>
     <p>This competition is sold out.</p>
     <p>A new competition is coming soon</p>
   </div>
+
+  <!-- Formular -->
+  <form id="paidForm">
+    <input type="text" name="name" placeholder="Name" required>
+    <input type="text" name="phone" placeholder="Phone" required>
+    <button type="submit" id="payBtn" class="button">Pay Now</button>
+  </form>
+
+  <!-- Mesaj de confirmare -->
+  <p id="successMsg" class="success-msg"></p>
 </div>
 
+<style>
+.container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+input[type="text"] {
+  width: 80%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.button {
+  display: inline-block;
+  padding: 12px 25px;
+  margin-top: 10px;
+  background: #0070f3;
+  color: #fff;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.button:hover {
+  background: #005bb5;
+}
+
+.closed-box {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  margin-top: 20px;
+  background: #f7f7f7;
+  border-radius: 10px;
+}
+
+.closed-box h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.closed-box p {
+  font-size: 18px;
+  color: #444;
+}
+
+.success-msg {
+  color: green;
+  font-weight: bold;
+  margin-top: 20px;
+}
+</style>
+
 <script>
-  const form = document.getElementById("payForm");
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz83nBjuCm_1iz5LDJocxk0i8JVPsjOIY8FUehh_dwkUGDDCMTerM7hElmxZKg9A2kapA/exec"; // pune aici URL-ul de la Apps Script
+const form = document.getElementById("paidForm");
+const successMsg = document.getElementById("successMsg");
+const closedBox = document.getElementById("closedBox");
+const payBtn = document.getElementById("payBtn");
 
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-    fetch(SCRIPT_URL, { method: "POST", body: new FormData(form) })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === "closed") {
-          form.style.display = "none";
-          document.getElementById("closedBox").style.display = "block";
-        } else {
-          form.reset();
-          alert("Entry received successfully! We will contact you if you win.");
-        }
-      })
-      .catch(error => console.error("Error!", error.message));
-  });
+// Adaugă aici URL-ul scriptului tău Google Apps Script
+const scriptURL = "https://script.google.com/macros/s/AKfycbzEPduvG90nxEGBkTQAfit-ssWT01NgBaARnWumgaFHRubHzjU79wo_-kyGIZFrDkW9/exec";
+
+form.addEventListener("submit", e => {
+  e.preventDefault();
+
+  fetch(scriptURL, { method: "POST", body: new FormData(form) })
+    .then(response => response.json())
+    .then(data => {
+      if(data.status === "ok"){
+        successMsg.textContent = "Entry received successfully! We will contact you if you win.";
+        form.reset();
+      } else if(data.status === "closed"){
+        form.style.display = "none";
+        closedBox.style.display = "block";
+      }
+    })
+    .catch(error => console.error("Error!", error.message));
+});
 </script>
-
-</body>
-</html>
