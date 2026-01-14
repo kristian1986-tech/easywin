@@ -12,8 +12,7 @@
     section{padding:40px;max-width:900px;margin:auto}
     h2{margin-top:0}
     ul{line-height:1.6}
-    .card{background:#fff;border-radius:10px;padding:25px;margin-bottom:30px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
-    .button, .wise-button {
+    .button {
       display: inline-block;
       padding: 12px 25px;
       margin: 10px;
@@ -24,12 +23,37 @@
       font-weight: bold;
       font-size: 16px;
       transition: background 0.3s;
-      cursor: pointer;
+      cursor:pointer;
     }
-    .button:hover, .wise-button:hover { background: #005bb5; }
+    .button:hover { background: #005bb5; }
     .button-container { text-align: center; margin-top: 20px; }
-    .payments-info { text-align:center; margin-top:30px; font-size:16px; color:#0070f3; }
-    footer{background:#111;color:#fff;text-align:center;padding:20px;font-size:14px}
+    .btn{padding:15px 25px;border-radius:8px;text-decoration:none;font-weight:bold}
+    .paid{background:#0a7cff;color:#fff}
+    .card{background:#fff;border-radius:10px;padding:25px;margin-bottom:30px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+    .popup-bg {
+      display:none;
+      position: fixed;
+      top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.6);
+      z-index:10000;
+    }
+    .popup {
+      background:#fff; padding:25px; border-radius:10px;
+      max-width:400px; margin:100px auto; position:relative;
+      text-align:center;
+    }
+    .popup input {
+      width:90%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc;
+    }
+    .popup button {
+      padding:10px 20px; margin:10px 5px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;
+    }
+    .popup button.submit {background:#2ecc71; color:#fff;}
+    .popup button.close {background:#e74c3c; color:#fff;}
+    .payment-logos {
+      margin-top: 30px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+    }
+    .payment-logos img {height: 28px; opacity: 0.85;}
   </style>
 </head>
 
@@ -54,16 +78,22 @@
   <div class="buttons">
     <div class="button-container">
       <a href="free-entry.html" class="button">Free Entry</a>
-      <a class="wise-button" id="wiseButton">Pay with Wise</a>
+      <button class="button" id="wiseBtn">Pay with Wise</button>
       <p>🔒 Secure entry • Live draw • UK based</p>
-      <img src="your-qr-code.png" alt="Wise QR Code" style="margin-top:10px; max-width:200px;">
     </div>
   </div>
 
   <section class="competition-duration">
     <h3>Competition Duration</h3>
-    <p>The competition will remain open until all available entries are sold, or until the maximum competition period of <strong>60 days</strong> is reached, whichever comes first.</p>
-    <p>If all entries are sold before the closing date, the draw will be held earlier. All valid entries have an equal and fair chance of winning.</p>
+    <p>
+      The competition will remain open until all available entries are sold,
+      or until the maximum competition period of <strong>60 days</strong> is reached,
+      whichever comes first.
+    </p>
+    <p>
+      If all entries are sold before the closing date, the draw will be held earlier.
+      All valid entries have an equal and fair chance of winning.
+    </p>
   </section>
 
   <div class="buttons">
@@ -72,24 +102,7 @@
     <a href="terms.html" class="button">Terms & Conditions</a>
   </div>
 
-  <div class="card">
-    <h2>Free Entry – Worldwide (Postal Entry)</h2>
-    <a href="free-entry.html" class="button">Enter for Free</a>
-    <p>Participants from any country can enter for free by post.</p>
-    <ul>
-      <li>Print and complete the Free Entry form</li>
-      <li>Send it by postal mail</li>
-      <li>No purchase required</li>
-    </ul>
-    <p><strong>Postal Address:</strong><br>
-      EasyWin Prize Draw<br>
-      5 Brayford Square<br>
-      London<br>
-      E1 0SG<br>
-      United Kingdom
-    </p>
-    <p><strong>Deadline:</strong> Entries must be received before the draw date.</p>
-  </div>
+  <p class="btn paid">Paid entry is available worldwide.</p>
 
   <div class="card">
     <h2>📩 Contact</h2>
@@ -102,52 +115,60 @@
     <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
   </div>
 
-  <div class="payments-info">
-    <p>Secure payments with Visa and Mastercard (Wise included)</p>
-    <p>Identity verified • Business details provided</p>
-  </div>
-
 </section>
 
-<footer>
-  <div>
+<footer style="text-align: center; font-size: 14px; line-height: 1.5; padding: 20px 10px;">
+  <div style="margin-bottom: 5px;">
     <a href="disclaimer.html" style="margin-right: 15px; color: #0070f3; text-decoration: none;">Disclaimer</a>
     <a href="cookie.html" style="color: #0070f3; text-decoration: none;">Cookie Policy</a>
   </div>
-  <div>
+  <div style="margin-bottom: 5px;">
     <a href="privacy.html" style="margin-right: 15px; color: #0070f3; text-decoration: none;">Privacy Policy</a>
     <a href="terms.html" style="color: #0070f3; text-decoration: none;">Terms & Conditions</a>
   </div>
   <div style="color: #555;">© 2025 Prize Draw Competition – All rights reserved</div>
 </footer>
 
+<!-- Wise Popup -->
+<div class="popup-bg" id="popupBg">
+  <div class="popup">
+    <h2>Pay with Wise</h2>
+    <img src="<<YOUR_QR_IMAGE_LINK>>" alt="Wise QR" style="width:150px;margin:15px 0;">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="text" id="phone" placeholder="Phone" required>
+    <input type="text" id="date" placeholder="Date" readonly>
+    <br>
+    <button class="submit" id="submitWise">Submit</button>
+    <button class="close" id="closePopup">Close</button>
+  </div>
+</div>
+
 <script>
-  // Cookie banner
-  if(!localStorage.getItem('cookiesAccepted')) {
-    document.getElementById('cookieBanner').style.display = 'block';
-  }
-  document.getElementById('acceptCookies').addEventListener('click', function() {
-    localStorage.setItem('cookiesAccepted', 'true');
-    document.getElementById('cookieBanner').style.display = 'none';
+  // Show popup
+  document.getElementById('wiseBtn').addEventListener('click', function(){
+    document.getElementById('popupBg').style.display = 'block';
+    document.getElementById('date').value = new Date().toLocaleDateString();
+  });
+  // Close popup
+  document.getElementById('closePopup').addEventListener('click', function(){
+    document.getElementById('popupBg').style.display = 'none';
   });
 
-  // Wise button link
-  document.getElementById('wiseButton').addEventListener('click', function() {
-    // Redirecționează către contul Wise
-    window.location.href = "https://wise.com/pay/me/cristiann268";
-
-    // Trimite datele în Google Sheet
-    var name = prompt("Enter your name:");
-    var phone = prompt("Enter your phone number:");
-    var date = new Date().toLocaleDateString();
-
-    var url = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec";
-    url += "?Name=" + encodeURIComponent(name) + "&Phone=" + encodeURIComponent(phone) + "&Date=" + encodeURIComponent(date);
-
-    fetch(url)
-      .then(response => response.text())
-      .then(data => console.log("Saved to sheet:", data))
-      .catch(err => console.error("Error saving to sheet:", err));
+  // Submit form to Google Sheet and redirect to Wise
+  document.getElementById('submitWise').addEventListener('click', function(){
+    var name = document.getElementById('name').value;
+    var phone = document.getElementById('phone').value;
+    var date = document.getElementById('date').value;
+    if(name && phone){
+      var url = 'https://script.google.com/macros/s/AKfycbxEXACT_YOUR_SCRIPT_ID_HERE/exec';
+      var params = `?Name=${encodeURIComponent(name)}&Phone=${encodeURIComponent(phone)}&Date=${encodeURIComponent(date)}`;
+      fetch(url + params)
+        .then(response => {
+          window.location.href = 'https://wise.com/pay/me/cristiann268';
+        }).catch(err=>{
+          alert('Error sending data. Try again.');
+        });
+    } else { alert('Please fill in all fields'); }
   });
 </script>
 
