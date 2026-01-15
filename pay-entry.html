@@ -91,6 +91,7 @@ input[type="text"] {
 }
 </style>
 
+<script src="https://js.stripe.com/v3/"></script>
 <script>
 const form = document.getElementById("paidForm");
 const successMsg = document.getElementById("successMsg");
@@ -98,20 +99,22 @@ const closedBox = document.getElementById("closedBox");
 const payBtn = document.getElementById("payBtn");
 const currentParticipants = document.getElementById("currentParticipants");
 
-// URL-ul tău de script
+// Public key Stripe (sandbox)
+const stripe = Stripe('pk_test_51SpsG3Rcb8bsNOMZ8uNemlKu3MfIS4RnkpccxNH97acZamvdNnYDAFATNTRTVOYx2R8kAG0VAOqnQ8ViDJVXz1GQ002V0SHibZ');
+
+// URL-ul tău de script Google Apps Script sau backend
 const scriptURL = "https://script.google.com/macros/s/AKfycbwk-dy3fhThpHGvea0yN2CxCu1cDJcR0aiXADW38Lg6ocT0NraxZngSv-J0jRIL2vyu/exec";
 
-/* 🔍 VERIFICARE STATUS LA ÎNCĂRCARE PAGINĂ */
+// Preț pe intrare (ex. 2.3 EUR)
+const entryAmount = 2.3;
+
 window.addEventListener("DOMContentLoaded", () => {
   fetch(scriptURL)
     .then(res => res.json())
     .then(data => {
-      // Afișează numărul curent de participanți
       if(data.currentParticipants !== undefined){
         currentParticipants.textContent = `Current participants: ${data.currentParticipants}`;
       }
-
-      // Verifică dacă competiția e închisă
       if (data.status === "closed") {
         form.style.display = "none";
         successMsg.style.display = "none";
@@ -121,15 +124,16 @@ window.addEventListener("DOMContentLoaded", () => {
     .catch(err => console.error("Status check error", err));
 });
 
-/* 📨 TRIMITERE FORMULAR */
 form.addEventListener("submit", e => {
   e.preventDefault();
 
+  const name = form.name.value.trim();
+  const phone = form.phone.value.trim();
+
+  // Trimite date la Google Apps Script pentru status + actualizare participanți
   fetch(scriptURL, { method: "POST", body: new FormData(form) })
     .then(response => response.json())
     .then(data => {
-
-      // 🔒 COMPETIȚIE ÎNCHISĂ
       if (data.status === "closed") {
         successMsg.style.display = "none";
         form.style.display = "none";
@@ -137,17 +141,20 @@ form.addEventListener("submit", e => {
         return;
       }
 
-      // ✅ ÎNSCRIERE OK
-      if (data.status === "ok") {
-        successMsg.textContent = "Entry received successfully! We will contact you if you win.";
-        successMsg.style.display = "block";
-        form.reset();
-
-        // Actualizează numărul curent de participanți
-        if(data.currentParticipants !== undefined){
-          currentParticipants.textContent = `Current participants: ${data.currentParticipants}`;
-        }
-      }
+      // Când e ok, redirect către Stripe Checkout (sandbox)
+      fetch("https://your-backend.com/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone, amount: entryAmount })
+      })
+      .then(res => res.json())
+      .then(session => {
+        stripe.redirectToCheckout({ sessionId: session.id });
+      })
+      .catch(err => {
+        console.error("Stripe checkout error", err);
+        successMsg.textContent = "Error initializing payment. Please try again later.";
+      });
 
     })
     .catch(error => console.error("Error!", error.message));
