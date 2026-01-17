@@ -102,9 +102,10 @@ const scriptURL =
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch(scriptURL);
-    const data = await res.json(); console.log(data);
+    const data = await res.json();
+    
+    console.log(data);
 alert(JSON.stringify(data));
-
     if (data.currentParticipants !== undefined) {
       currentParticipants.textContent =
         "Current participants: " + data.currentParticipants;
