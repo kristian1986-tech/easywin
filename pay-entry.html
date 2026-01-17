@@ -82,18 +82,17 @@
   const form = document.getElementById("paidForm");
   const successMsg = document.getElementById("successMsg");
   const closedBox = document.getElementById("closedBox");
-  const payBtn = document.getElementById("payBtn");
   const currentParticipants = document.getElementById("currentParticipants");
 
-  // Stripe sandbox public key
+  // Sandbox Public Key Stripe (poți schimba cu Live Key când e gata)
   const stripe = Stripe('pk_test_51SpsG3Rcb8bsNOMZ8uNemlKu3MfIS4RnkpccxNH97acZamvdNnYDAFATNTRTVOYx2R8kAG0VAOqnQ8ViDJVXz1GQ002V0SHibZ');
 
-  // URL-ul tău Google Apps Script
-  const scriptURL = "https://script.google.com/macros/s/AKfycbz6Era6wNT31_mGjjn0jDPQ10ke9CpHk-wtNSA5efSQ8m1uY7y_eP7Hk_DuccCb-h5M/exec";
+  // URL-ul Apps Script actual
+  const scriptURL = "https://script.google.com/macros/s/AKfycbzPdarJwiGUrnQgD96fTbN554A0A_9scTkj0kkcjLLIAipVLKyrKMhuKevd7baHyCRN/exec";
 
-  const entryAmount = 2.3; // preț intrare în EUR
+  const entryAmount = 2.3; // preț intrare EUR
 
-  // La încărcarea paginii, verificăm status + participanți
+  // La încărcare, verifică participanți + status
   window.addEventListener("DOMContentLoaded", () => {
     fetch(scriptURL)
       .then(res => res.json())
@@ -116,18 +115,18 @@
     const name = form.name.value.trim();
     const phone = form.phone.value.trim();
 
-    // Trimite date la Google Apps Script pentru a salva participantul
+    // Trimite date la Apps Script pentru salvare
     fetch(scriptURL, { method: "POST", body: new FormData(form) })
-      .then(response => response.json())
+      .then(res => res.json())
       .then(data => {
         if (data.status === "closed") {
-          successMsg.style.display = "none";
           form.style.display = "none";
+          successMsg.style.display = "none";
           closedBox.style.display = "block";
           return;
         }
 
-        // Afișăm mesaj de succes temporar
+        // Afișare mesaj succes salvare participant
         successMsg.textContent = "Entry saved! Preparing Stripe payment...";
         successMsg.style.display = "block";
         form.reset();
@@ -136,10 +135,21 @@
           currentParticipants.textContent = `Current participants: ${data.currentParticipants}`;
         }
 
-        // Simulare Stripe checkout (sandbox)
-        setTimeout(() => {
-          successMsg.textContent = "Stripe checkout simulated (sandbox) — no real payment taken.";
-        }, 1000);
+        // Stripe Checkout (sandbox)
+        fetch("https://your-backend.com/create-checkout-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, phone, amount: entryAmount })
+        })
+        .then(res => res.json())
+        .then(session => {
+          stripe.redirectToCheckout({ sessionId: session.id });
+        })
+        .catch(err => {
+          console.error("Stripe checkout error", err);
+          successMsg.textContent = "Stripe payment simulated (sandbox) — no real payment taken.";
+        });
+
       })
       .catch(err => {
         console.error("Error!", err);
