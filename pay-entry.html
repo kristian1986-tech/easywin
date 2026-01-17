@@ -102,7 +102,8 @@ const scriptURL =
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch(scriptURL);
-    const data = await res.json();
+    const data = await res.json(); console.log(data);
+alert(JSON.stringify(data));
 
     if (data.currentParticipants !== undefined) {
       currentParticipants.textContent =
