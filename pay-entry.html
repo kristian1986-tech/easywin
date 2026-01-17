@@ -4,32 +4,81 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Paid Entry – EasyWin Prize Draw</title>
+
 <style>
-.container { max-width:500px;margin:50px auto;padding:30px;background:#fff;border-radius:10px;text-align:center;box-shadow:0 0 10px rgba(0,0,0,0.1);}
-input[type="text"]{width:80%;padding:12px;margin:10px 0;border-radius:5px;border:1px solid #ccc;font-size:16px;}
-.button{display:inline-block;padding:12px 25px;margin-top:10px;background:#0070f3;color:#fff;border-radius:5px;font-weight:bold;font-size:16px;cursor:pointer;transition:background 0.3s;}
-.button:hover{background:#005bb5;}
-.closed-box{display:none;text-align:center;padding:40px;margin-top:20px;background:#f7f7f7;border-radius:10px;}
-.closed-box h2{font-size:28px;margin-bottom:10px;}
-.closed-box p{font-size:18px;color:#444;}
-.success-msg{color:green;font-weight:bold;margin-top:20px;}
-.participants-count{font-size:18px;font-weight:bold;margin-bottom:20px;}
+.container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+input[type="text"] {
+  width: 80%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+.button {
+  display: inline-block;
+  padding: 12px 25px;
+  margin-top: 10px;
+  background: #0070f3;
+  color: #fff;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+.button:hover {
+  background: #005bb5;
+}
+.closed-box {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  margin-top: 20px;
+  background: #f7f7f7;
+  border-radius: 10px;
+}
+.success-msg {
+  color: green;
+  font-weight: bold;
+  margin-top: 20px;
+}
+.participants-count {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
 </style>
 </head>
+
 <body>
+
 <div class="container">
   <h1>Paid Entry</h1>
-  <p id="currentParticipants" class="participants-count">Current participants: 0</p>
+
+  <p id="currentParticipants" class="participants-count">
+    Current participants: 0
+  </p>
+
   <div id="closedBox" class="closed-box">
     <h2>Entries are closed</h2>
     <p>This competition is sold out.</p>
     <p>A new competition is coming soon</p>
   </div>
+
   <form id="paidForm">
-    <input type="text" name="name" placeholder="Name" required>
-    <input type="text" name="phone" placeholder="Phone" required>
-    <button type="submit" id="payBtn" class="button">Pay Now</button>
+    <input type="text" name="name" placeholder="Name" required />
+    <input type="text" name="phone" placeholder="Phone" required />
+    <button type="submit" class="button">Pay Now</button>
   </form>
+
   <p id="successMsg" class="success-msg"></p>
 </div>
 
@@ -40,66 +89,67 @@ const successMsg = document.getElementById("successMsg");
 const closedBox = document.getElementById("closedBox");
 const currentParticipants = document.getElementById("currentParticipants");
 
-// Stripe sandbox public key
-const stripe = Stripe('pk_live_51SpsFaDojLJvrb5SW7QbmQ3zEBqG7DVndDqWg5SPKSBJpRGEfLgo04K8H2BmQ13w0BViei5n53Iw9OjLBN2zrqsB00Ru4ueUhx');
+// STRIPE LIVE PUBLIC KEY
+const stripe = Stripe(
+  "pk_live_51SpsFaDojLJvrb5SW7QbmQ3zEBqG7DVndDqWg5SPKSBJpRGEfLgo04K8H2BmQ13w0BViei5n53Iw9OjLBN2zrqsB00Ru4ueUhx"
+);
 
-// Apps Script URL final
-const scriptURL = "https://script.google.com/macros/s/AKfycbz5VEFO_DPmUGBx1JX6qO1nqMhxLBO7S9922AwnKG-2IsxnKdG6MUMceX7rF0tiujngyA/exec";
+// APPS SCRIPT LIVE URL
+const scriptURL =
+  "https://script.google.com/macros/s/AKfycbzDh675Hos8zJ68E8uSK7FREb9jXa7S3XlCSIay-1TNJDTMRnlkc-WGp-Lofd_ZaWKjfQ/exec";
 
-const entryAmount = 2.3; // EUR
-
-// Verificare status + participanți
+// Load status + participants
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch(scriptURL);
     const data = await res.json();
-    if(data.currentParticipants!==undefined){
-      currentParticipants.textContent = `Current participants: ${data.currentParticipants}`;
+
+    if (data.currentParticipants !== undefined) {
+      currentParticipants.textContent =
+        "Current participants: " + data.currentParticipants;
     }
-    if(data.status==="closed"){
-      form.style.display="none";
-      successMsg.style.display="none";
-      closedBox.style.display="block";
+
+    if (data.status === "closed") {
+      form.style.display = "none";
+      closedBox.style.display = "block";
     }
-  } catch(err){ console.error("Status error", err); }
+  } catch (err) {
+    console.error(err);
+  }
 });
 
+// PAY NOW
 form.addEventListener("submit", async e => {
   e.preventDefault();
-  const name = form.name.value.trim();
-  const phone = form.phone.value.trim();
-  successMsg.textContent="Saving your entry...";
-  successMsg.style.display="block";
 
-  try{
-    const res = await fetch(scriptURL, { method:"POST", body:new FormData(form) });
+  successMsg.textContent = "Redirecting to secure payment...";
+  successMsg.style.display = "block";
+
+  try {
+    const res = await fetch(scriptURL, {
+      method: "POST",
+      body: new FormData(form)
+    });
+
     const data = await res.json();
 
-    if(data.status==="closed"){
-      successMsg.style.display="none";
-      form.style.display="none";
-      closedBox.style.display="block";
-      return;
-    }
-
-    if(data.status==="ok"){
-      if(data.currentParticipants!==undefined){
-        currentParticipants.textContent = `Current participants: ${data.currentParticipants}`;
-      }
-      successMsg.textContent="Entry saved! Preparing Stripe payment...";
-      setTimeout(()=>{
-        successMsg.textContent="Stripe checkout simulated (sandbox) — no real payment taken.";
-      },1000);
-      form.reset();
+    if (data.status === "ok" && data.sessionId) {
+      stripe.redirectToCheckout({
+        sessionId: data.sessionId
+      });
+    } else if (data.status === "closed") {
+      form.style.display = "none";
+      closedBox.style.display = "block";
     } else {
-      successMsg.textContent="Error saving entry. Try again.";
+      successMsg.textContent = "Payment error. Try again.";
     }
 
-  } catch(err){
-    console.error("Error",err);
-    successMsg.textContent="Payment error. Try again.";
+  } catch (err) {
+    console.error(err);
+    successMsg.textContent = "Payment error. Try again.";
   }
 });
 </script>
+
 </body>
 </html>
