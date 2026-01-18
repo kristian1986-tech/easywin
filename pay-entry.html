@@ -97,8 +97,9 @@ const paypalContainer = document.getElementById("paypal-button-container");
 const scriptURL = "https://script.google.com/macros/s/AKfycbxttKtLdhd21ZCl4M67DuGv8yaH36oHjbYhOqajrFPt8ArbW18YtgLmCTMEp5-4hUR34Q/exec";
 
 let paymentStarted = false;
+let savedFormData = null;
 
-// Load status + participants
+// Load status
 async function loadStatus() {
   try {
     const res = await fetch(scriptURL);
@@ -113,44 +114,42 @@ async function loadStatus() {
       closedBox.style.display = "block";
     }
   } catch (err) {
-    console.error("Status error:", err);
+    console.error(err);
   }
 }
 
 window.addEventListener("DOMContentLoaded", loadStatus);
 
-// SUBMIT FORM → SHOW PAYPAL (ANTI-DUBLARE)
+// SUBMIT FORM
 form.addEventListener("submit", e => {
   e.preventDefault();
-
   if (paymentStarted) return;
+
   paymentStarted = true;
+  savedFormData = new FormData(form);
 
   successMsg.textContent = "Please complete the payment below.";
   successMsg.style.display = "block";
-
   paypalContainer.style.display = "block";
   form.querySelector("button").disabled = true;
-
-  const formData = new FormData(form);
 
   paypal.Buttons({
     createOrder: (data, actions) => {
       return actions.order.create({
         purchase_units: [{
-          amount: {
-            value: "0.50"
-          },
+          amount: { value: "0.50" },
           description: "Paid Entry – EasyWin Prize Draw"
         }]
       });
     },
-    onApprove: async (data, actions) => {
-      await actions.order.capture();
 
+    onApprove: async (data, actions) => {
+      const details = await actions.order.capture();
+
+      // salvare garantată
       await fetch(scriptURL, {
         method: "POST",
-        body: formData
+        body: savedFormData
       });
 
       successMsg.textContent = "Thank you! Your entry has been recorded.";
@@ -158,7 +157,15 @@ form.addEventListener("submit", e => {
       form.style.display = "none";
 
       loadStatus();
+    },
+
+    onError: err => {
+      console.error("PayPal error:", err);
+      successMsg.textContent = "Payment error. Please refresh and try again.";
+      paymentStarted = false;
+      form.querySelector("button").disabled = false;
     }
+
   }).render('#paypal-button-container');
 });
 </script>
