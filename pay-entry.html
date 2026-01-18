@@ -94,35 +94,43 @@ const closedBox = document.getElementById("closedBox");
 const currentParticipants = document.getElementById("currentParticipants");
 const paypalContainer = document.getElementById("paypal-button-container");
 
-// APPS SCRIPT URL – pune aici URL-ul web app al scriptului tău
 const scriptURL = "https://script.google.com/macros/s/AKfycbxttKtLdhd21ZCl4M67DuGv8yaH36oHjbYhOqajrFPt8ArbW18YtgLmCTMEp5-4hUR34Q/exec";
+
+let paymentStarted = false;
 
 // Load status + participants
 async function loadStatus() {
   try {
     const res = await fetch(scriptURL);
     const data = await res.json();
-    if(data.currentParticipants !== undefined) {
+
+    if (data.currentParticipants !== undefined) {
       currentParticipants.textContent = "Current participants: " + data.currentParticipants;
     }
-    if(data.status === "closed") {
+
+    if (data.status === "closed") {
       form.style.display = "none";
       closedBox.style.display = "block";
     }
-  } catch(err) {
+  } catch (err) {
     console.error("Status error:", err);
   }
 }
 
 window.addEventListener("DOMContentLoaded", loadStatus);
 
-// SUBMIT FORM → SHOW PAYPAL
-form.addEventListener("submit", async e => {
+// SUBMIT FORM → SHOW PAYPAL (ANTI-DUBLARE)
+form.addEventListener("submit", e => {
   e.preventDefault();
+
+  if (paymentStarted) return;
+  paymentStarted = true;
 
   successMsg.textContent = "Please complete the payment below.";
   successMsg.style.display = "block";
+
   paypalContainer.style.display = "block";
+  form.querySelector("button").disabled = true;
 
   const formData = new FormData(form);
 
@@ -131,7 +139,7 @@ form.addEventListener("submit", async e => {
       return actions.order.create({
         purchase_units: [{
           amount: {
-            value: "0.50" // suma fixă în EUR
+            value: "0.50"
           },
           description: "Paid Entry – EasyWin Prize Draw"
         }]
@@ -146,10 +154,9 @@ form.addEventListener("submit", async e => {
       });
 
       successMsg.textContent = "Thank you! Your entry has been recorded.";
-      form.style.display = "none";
       paypalContainer.style.display = "none";
+      form.style.display = "none";
 
-      // reîncarcă numărul de participanți
       loadStatus();
     }
   }).render('#paypal-button-container');
