@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Optional Contribution – EasyWin Prize Draw</title>
+<title>Paid Entry – EasyWin Prize Draw</title>
 
 <style>
 .container {
@@ -61,7 +61,7 @@ input[type="text"] {
 <body>
 
 <div class="container">
-  <h1>Optional Contribution</h1>
+  <h1>Paid Entry</h1>
 
   <p id="currentParticipants" class="participants-count">
     Current participants: 0
@@ -94,8 +94,8 @@ const closedBox = document.getElementById("closedBox");
 const currentParticipants = document.getElementById("currentParticipants");
 const paypalContainer = document.getElementById("paypal-button-container");
 
-// APPS SCRIPT URL – rămâne neschimbat
-const scriptURL = "https://script.google.com/macros/s/AKfycbz5iSXwx4rqVcy34My8C27De-G6mvGzyDmQgo9O7CW7rWm4GMt4hPiLPa3ZRgAlDP2r/exec";
+// APPS SCRIPT URL – pune aici URL-ul web app al scriptului tău
+const scriptURL = "https://script.google.com/macros/s/AKfycbxttKtLdhd21ZCl4M67DuGv8yaH36oHjbYhOqajrFPt8ArbW18YtgLmCTMEp5-4hUR34Q/exec";
 
 // Load status + participants
 async function loadStatus() {
@@ -120,7 +120,7 @@ window.addEventListener("DOMContentLoaded", loadStatus);
 form.addEventListener("submit", async e => {
   e.preventDefault();
 
-  successMsg.textContent = "Please complete the optional contribution below.";
+  successMsg.textContent = "Please complete the payment below.";
   successMsg.style.display = "block";
   paypalContainer.style.display = "block";
 
@@ -131,16 +131,15 @@ form.addEventListener("submit", async e => {
       return actions.order.create({
         purchase_units: [{
           amount: {
-            value: "2.50"  // suma corectă
+            value: "2.50" // suma fixă în EUR
           },
-          description: "Optional contribution – EasyWin Prize Draw"
+          description: "Paid Entry – EasyWin Prize Draw"
         }]
       });
     },
     onApprove: async (data, actions) => {
       await actions.order.capture();
 
-      // trimite info către Google Apps Script
       await fetch(scriptURL, {
         method: "POST",
         body: formData
@@ -149,6 +148,9 @@ form.addEventListener("submit", async e => {
       successMsg.textContent = "Thank you! Your entry has been recorded.";
       form.style.display = "none";
       paypalContainer.style.display = "none";
+
+      // reîncarcă numărul de participanți
+      loadStatus();
     }
   }).render('#paypal-button-container');
 });
