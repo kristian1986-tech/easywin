@@ -75,7 +75,6 @@ ul{line-height:1.6}
   <div class="card" style="text-align:center;">
     <h2>🎁 Win an iPhone 15</h2>
 
-    <!-- SEO MICRO TEXT -->
     <p style="font-size:14px; color:#666; margin-top:8px;">
       EasyWin Prize Draw is an EU-based prize draw competition with free postal entry available worldwide.
       One winner will receive a brand new iPhone 15, selected by a fair random draw.
@@ -90,8 +89,8 @@ ul{line-height:1.6}
 
   <div class="buttons">
     <div class="button-container">
-      <a href="free-entry.html" class="button">Free Entry</a>
-      <a href="pay-entry.html" class="button">Optional Contribution</a>
+      <a href="free-entry.html" class="button" id="freeEntryBtn">Free Entry</a>
+      <a href="pay-entry.html" class="button" id="payEntryBtn">Optional Contribution</a>
       <p>🔒 Secure entry • Live draw • EU based</p>
     </div>
   </div>
@@ -195,6 +194,22 @@ ul{line-height:1.6}
     © 2025 EasyWin Prize Draw – Operated by Cristian Nicolae (OSVČ)
   </div>
 </footer>
+
+<script>
+document.getElementById("freeEntryBtn").addEventListener("click", function() {
+  gtag('event', 'free_entry_click', {
+    event_category: 'engagement',
+    event_label: 'Free Entry Button'
+  });
+});
+
+document.getElementById("payEntryBtn").addEventListener("click", function() {
+  gtag('event', 'pay_entry_click', {
+    event_category: 'engagement',
+    event_label: 'Pay Entry Button'
+  });
+});
+</script>
 
 </body>
 </html>
