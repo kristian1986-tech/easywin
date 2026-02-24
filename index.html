@@ -233,8 +233,7 @@ fetch("https://script.google.com/macros/s/AKfycbzPZ1AxFGoRk6urZxAo8aq4rXAYYa6A2O
 
 var max = 400;
 
-// IMPORTANT: citește numărul de participanți din listă
-var current = data.participants.length;
+var current = data.currentParticipants;
 
 var remaining = max - current;
 
@@ -242,8 +241,18 @@ document.getElementById("entryCount").innerText =
 current + " / " + max + " entries claimed – " +
 remaining + " remaining";
 
+})
+
+.catch(error => {
+
+document.getElementById("entryCount").innerText =
+"Error loading entries";
+
+console.log(error);
+
 });
 
-</script>
+  </script>
+  
 </body>
 </html>
