@@ -80,7 +80,9 @@ ul{line-height:1.6}
          style="max-width:100%; border-radius:10px; margin-top:15px;">
 
     <p style="font-size:14px; color:#e74c3c; margin-top:10px; font-weight:bold;">
-      🔥 47 / 400 entries claimed - 353 remaining
+      <p id="entryCount" style="font-size:14px; color:#444; margin-top:10px;">
+Loading entries...
+      </p>
       <p style="font-size:14px; color:#27ae60; font-weight:bold;">
 Winner guaranteed when all 400 spots are filled
       </p>
@@ -220,6 +222,25 @@ document.getElementById("payEntryBtn").addEventListener("click", function() {
   });
 });
 </script>
+  
+<script>
 
+fetch("LINKUL_TAU_GOOGLE_SCRIPT_AICI")
+
+.then(response => response.json())
+
+.then(data => {
+
+var current = data.count;
+var max = 400;
+var remaining = max - current;
+
+document.getElementById("entryCount").innerText =
+current + " / " + max + " entries claimed – " +
+remaining + " remaining";
+
+});
+
+</script>
 </body>
 </html>
