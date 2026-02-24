@@ -249,6 +249,46 @@ var max = 400;
 var current = data.currentParticipants;
 var remaining = max - current;
 var percent = (current / max) * 100;
+  
+  // LAST ENTRY TIMER (minute / ore)
+
+var now = Date.now();
+
+var savedCount = localStorage.getItem("lastCount");
+var lastTime = localStorage.getItem("lastEntryTime");
+
+if (!savedCount) {
+localStorage.setItem("lastCount", current);
+localStorage.setItem("lastEntryTime", now);
+lastTime = now;
+}
+
+if (savedCount != current) {
+localStorage.setItem("lastEntryTime", now);
+localStorage.setItem("lastCount", current);
+lastTime = now;
+}
+
+var diff = now - lastTime;
+
+var minutes = Math.floor(diff / 60000);
+var hours = Math.floor(diff / 3600000);
+
+var text = "";
+
+if (minutes < 1) {
+text = "Last entry just now";
+}
+else if (minutes < 60) {
+text = "Last entry " + minutes +
+(minutes == 1 ? " minute ago" : " minutes ago");
+}
+else {
+text = "Last entry " + hours +
+(hours == 1 ? " hour ago" : " hours ago");
+}
+
+document.getElementById("lastEntry").innerText = text;
 
 document.getElementById("entryCount").innerText =
 current + " / " + max + " entries claimed – " +
