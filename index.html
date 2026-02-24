@@ -222,8 +222,8 @@ document.getElementById("payEntryBtn").addEventListener("click", function() {
   });
 });
 </script>
-  
-<script>
+
+  <script>
 
 fetch("https://script.google.com/macros/s/AKfycbzPZ1AxFGoRk6urZxAo8aq4rXAYYa6A2OVt9s9loPHgx4GaZLzA2fa55b-G9lmTn0akhg/exec")
 
@@ -231,8 +231,11 @@ fetch("https://script.google.com/macros/s/AKfycbzPZ1AxFGoRk6urZxAo8aq4rXAYYa6A2O
 
 .then(data => {
 
-var current = data.count;
 var max = 400;
+
+// IMPORTANT: citește numărul de participanți din listă
+var current = data.participants.length;
+
 var remaining = max - current;
 
 document.getElementById("entryCount").innerText =
