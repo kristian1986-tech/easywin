@@ -73,27 +73,6 @@ ul{line-height:1.6}
 
   <!-- CURRENT PRIZE -->
   <div class="card" style="text-align:center;">
-
-    <!-- ADAUGAT imagine + progress bar -->
-    <img src="500euro.png" alt="Win 500 Euro Cash"
-    style="max-width:350px;width:100%;border-radius:10px;margin-bottom:15px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
-
-    <div style="margin-bottom:15px;">
-      <p style="font-size:18px;font-weight:bold;">
-        <span id="entryCount">47</span> / 400 entries claimed
-      </p>
-
-      <div style="background:#ddd;border-radius:10px;width:100%;height:20px;">
-        <div id="progressBar"
-        style="background:#2ecc71;width:12%;height:100%;border-radius:10px;"></div>
-      </div>
-
-      <p style="color:#e74c3c;font-weight:bold;margin-top:8px;">
-        Only <span id="spotsLeft">353</span> spots remaining
-      </p>
-    </div>
-
-    <!-- CODUL TAU ORIGINAL RAMANE -->
     <h2>🎁 Win an iPhone 15</h2>
 
     <p style="font-size:14px; color:#666; margin-top:8px;">
@@ -104,7 +83,6 @@ ul{line-height:1.6}
     <p style="font-size:15px; color:#555; margin-top:12px;">
       Free entry is always available. Optional contributions are voluntary and do not affect the draw.
     </p>
-
   </div>
 
   <h2 style="text-align:center;">Enter Now</h2>
@@ -151,7 +129,55 @@ ul{line-height:1.6}
     </p>
   </div>
 
-  <!-- TOT RESTUL CODULUI TAU RAMANE IDENTIC -->
+  <div id="free" class="card">
+    <h2>Free Entry – Worldwide (Postal Entry)</h2>
+    <a href="free-entry.html">Enter for Free</a>
+    <p>Participants from any country can enter for free by post.</p>
+    <ul>
+      <li>Print and complete the Free Entry form</li>
+      <li>Send it by postal mail</li>
+      <li>No purchase required</li>
+    </ul>
+    <p><strong>Postal Address:</strong><br>
+      Cristian Nicolae<br>
+      Komenského 1075/77<br>
+      323 00 Plzeň<br>
+      Czech Republic
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>🎥 Winner Selection</h2>
+    <p>The winner is selected using a fair random draw. All optional and free entries are included equally.</p>
+    <p>Draws may be recorded or streamed live.</p>
+  </div>
+
+  <div class="card">
+    <h2>📜 Terms & Conditions (Summary)</h2>
+    <ul>
+      <li>Optional contributions are available worldwide. Free postal entry is available as an alternative.</li>
+      <li>Free Entry: available worldwide via postal mail</li>
+      <li>Winner contacted via provided contact details</li>
+      <li>EU law applies</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📩 Contact</h2>
+    <p>Email: easywin.prizedraw@gmail.com</p>
+    <p>Operator: <strong>Cristian Nicolae, OSVČ</strong></p>
+    <p>Address: Komenského 1075/77, 323 00 Plzeň, Czech Republic</p>
+  </div>
+
+  <div class="payment-logos">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+  </div>
+
+  <p style="max-width:900px;margin:40px auto 10px;font-size:13px;color:#666;text-align:center;">
+    EasyWin Prize Draw is a legitimate EU-based prize draw competition.
+    Free entry is always available by post. No purchase is necessary.
+    Optional contributions do not affect the chances of winning.
+  </p>
 
 </section>
 
@@ -160,28 +186,29 @@ ul{line-height:1.6}
     <a href="disclaimer.html" style="margin-right: 15px; color: #0070f3; text-decoration: none;">Disclaimer</a>
     <a href="cookie.html" style="color: #0070f3; text-decoration: none;">Cookie Policy</a>
   </div>
+  <div style="margin-bottom: 5px;">
+    <a href="privacy.html" style="margin-right: 15px; color: #0070f3; text-decoration: none;">Privacy Policy</a>
+    <a href="terms.html" style="color: #0070f3; text-decoration: none;">Terms & Conditions</a>
+  </div>
+  <div style="color: #555;">
+    © 2025 EasyWin Prize Draw – Operated by Cristian Nicolae (OSVČ)
+  </div>
 </footer>
 
 <script>
 document.getElementById("freeEntryBtn").addEventListener("click", function() {
-  gtag('event', 'free_entry_click');
+  gtag('event', 'free_entry_click', {
+    event_category: 'engagement',
+    event_label: 'Free Entry Button'
+  });
 });
 
 document.getElementById("payEntryBtn").addEventListener("click", function() {
-  gtag('event', 'pay_entry_click');
+  gtag('event', 'pay_entry_click', {
+    event_category: 'engagement',
+    event_label: 'Pay Entry Button'
+  });
 });
-</script>
-
-<!-- ADAUGAT SCRIPT PROGRESS -->
-<script>
-let totalEntries = 47;
-let maxEntries = 400;
-
-let percent = (totalEntries / maxEntries) * 100;
-
-document.getElementById("progressBar").style.width = percent + "%";
-document.getElementById("entryCount").innerText = totalEntries;
-document.getElementById("spotsLeft").innerText = maxEntries - totalEntries;
 </script>
 
 </body>
